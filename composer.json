@@ -1,0 +1,49 @@
+{
+    "name": "sharepai/oss",
+    "type": "phpbb-extension",
+    "description": "An extension that utilizes Aliyun OSS as the filesystem for uploaded files.",
+    "homepage": "https://github.com/snaill/phpbb-extension-oss",
+    "version": "1.0.0",
+    "keywords": [
+        "phpbb",
+        "extension",
+        "Aliyun",
+        "OSS",
+        "simple storage service",
+        "phpbb-extension-oss"
+    ],
+    "time": "2020-04-15",
+    "license": "GPL-2.0",
+    "authors": [
+        {
+            "name": "snaill",
+            "email": "snaill@jeebook.com",
+            "homepage": "https://github.com/snaill/",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.0",
+        "aliyuncs/oss-sdk-php": "~2.3",
+        "composer/installers": "~1.0"
+    },
+    "require-dev": {
+        "phpbb/epv": "dev-master"
+    },
+    "extra": {
+        "display-name": "Aliyun OSS",
+        "soft-require": {
+            "phpbb/phpbb": "～3.3"
+        }
+    },
+    "repositories": {
+        "0": {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        },
+        "packagist": {
+            "type": "composer",
+            "url": "https://mirrors.aliyun.com/composer/"
+        }
+    }
+}

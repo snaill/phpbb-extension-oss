@@ -1,0 +1,92 @@
+<!-- INCLUDE overall_header.html -->
+
+<h1>{L_SETTINGS}</h1>
+
+<p>{L_ACP_OSS_ACCESS_KEYS_EXPLAIN}</p>
+
+<!-- IF OSS_ERROR -->
+<div class="errorbox"><h3>{L_WARNING}</h3>
+	<p>{OSS_ERROR}</p>
+</div>
+<!-- ENDIF -->
+
+<form id="acp_board" method="post" action="{U_ACTION}">
+	<fieldset>
+		<dl>
+			<dt>
+				<label for="oss_access_key_id">{L_ACP_OSS_ACCESS_KEY_ID}</label>
+				<br>
+				<span>{L_ACP_OSS_ACCESS_KEY_ID_EXPLAIN}</span>
+			</dt>
+			<dd>
+				<input type="text" id="oss_access_key_id" name="oss_access_key_id" value="{OSS_ACCESS_KEY_ID}"
+					   maxlength="255" size="40"/>
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label for="oss_secret_access_key">{L_ACP_OSS_SECRET_ACCESS_KEY}</label>
+				<br>
+				<span>{L_ACP_OSS_SECRET_ACCESS_KEY_EXPLAIN}</span>
+			</dt>
+			<dd>
+				<input type="text" id="oss_secret_access_key" name="oss_secret_access_key"
+					   value="{OSS_SECRET_ACCESS_KEY}" maxlength="255" size="50"/>
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label for="oss_endpoint">{L_ACP_OSS_ENDPOINT}</label>
+				<br>
+				<span>{L_ACP_OSS_ENDPOINT_EXPLAIN}</span>
+			</dt>
+			<dd>
+				<input type="text" id="oss_endpoint" name="oss_endpoint" value="{OSS_ENDPOINT}" maxlength="255" size="30"/>
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label for="oss_bucket">{L_ACP_OSS_BUCKET}</label>
+				<br>
+				<span>{L_ACP_OSS_BUCKET_EXPLAIN}</span>
+			</dt>
+			<dd>
+				<input type="text" id="oss_bucket" name="oss_bucket" value="{OSS_BUCKET}" maxlength="255" size="30"/>
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label for="oss_host">{L_ACP_OSS_HOST}</label>
+				<br>
+				<span>{L_ACP_OSS_HOST_EXPLAIN}</span>
+			</dt>
+			<dd>
+				<input type="text" id="oss_host" name="oss_host" value="{OSS_HOST}" maxlength="255" size="30"/>
+			</dd>
+		</dl>
+
+		<hr/>
+
+		<dl>
+			<dt>
+				<label>{L_ACP_OSS_IS_ENABLED}</label>
+				<br>
+				<span>{L_ACP_OSS_IS_ENABLED_EXPLAIN}</span>
+			</dt>
+			<dd>{OSS_IS_ENABLED}</dd>
+		</dl>
+
+		<p class="submit-buttons">
+			<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}"/>&nbsp;
+			<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}"/>
+		</p>
+
+		{S_FORM_TOKEN}
+	</fieldset>
+</form>
+
+<!-- INCLUDE overall_footer.html -->
