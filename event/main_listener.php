@@ -208,8 +208,7 @@ class main_listener implements EventSubscriberInterface
 	 */
 	public function get_avatar_after($event)
 	{
-		global $user;
-		if ($this->config['oss_is_enabled'])
+		if ($this->config['oss_is_enabled'] && !empty($event['html']))
 		{
 			//
 			$avatar_data = $event['avatar_data'];
