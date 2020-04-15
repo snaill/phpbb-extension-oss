@@ -68,6 +68,10 @@ class main_listener implements EventSubscriberInterface
 			'core.modify_uploaded_file'                     => 'modify_uploaded_file',
 			'core.delete_attachments_from_filesystem_after' => 'delete_attachments_from_filesystem_after',
 			'core.parse_attachments_modify_template_data'   => 'parse_attachments_modify_template_data',
+
+			'core.get_avatar_after'							=> 'get_avatar_after',
+			'core.avatar_driver_upload_move_file_before'	=> 'avatar_driver_upload_move_file_before',
+			'core.avatar_driver_upload_delete_before'		=> 'avatar_driver_upload_delete_before',
 		];
 	}
 
@@ -93,8 +97,8 @@ class main_listener implements EventSubscriberInterface
 			$filedata = $event['filedata'];
 
 			// Fullsize
-			$key = $filedata['physical_filename'];
-			$path = $this->phpbb_root_path . $this->config['upload_path'] . '/' . $key;
+			$key = $this->config['upload_path'] . '/' . $filedata['physical_filename'];
+			$path = $this->phpbb_root_path . $key;
 			$this->uploadFileToOSS($key, $path, $filedata['mimetype']);
 		}
 	}
@@ -110,7 +114,8 @@ class main_listener implements EventSubscriberInterface
 		{
 			foreach ($event['physical'] as $physical_file)
 			{
-				$this->oss_client->deleteObject($this->config['oss_bucket'], $physical_file['filename']);
+				$key = $this->config['upload_path'] . '/' . $physical_file['filename'];
+				$this->oss_client->deleteObject($this->config['oss_bucket'], $key);
 			}
 		}
 	}
@@ -129,16 +134,17 @@ class main_listener implements EventSubscriberInterface
 			$block_array = $event['block_array'];
 			$attachment = $event['attachment'];
 
-			$key = 'thumb_' . $attachment['physical_filename'];
+			$key = $this->config['upload_path'] . '/' . 'thumb_' . $attachment['physical_filename'];
+			$attachment_key = $this->config['upload_path'] . '/' . $attachment['physical_filename'];
 
 			if (empty($this->config['oss_host'])) {
 				$oss_link_thumb = '//' . $this->config['oss_bucket'] . '.' . $this->config['oss_endpoint'] . '/' . $key;
-				$oss_link_fullsize = '//' . $this->config['oss_bucket'] . '.' . $this->config['oss_endpoint'] . '/' . $attachment['physical_filename'];
+				$oss_link_fullsize = '//' . $this->config['oss_bucket'] . '.' . $this->config['oss_endpoint'] . '/' . $attachment_key;
 			} else {
 				$oss_link_thumb = '//' . $this->config['oss_host'] . '/' . $key;
-				$oss_link_fullsize = '//' . $this->config['oss_host'] . '/' . $attachment['physical_filename'];
+				$oss_link_fullsize = '//' . $this->config['oss_host'] . '/' . $attachment_key;
 			}
-			$local_thumbnail = $this->phpbb_root_path . $this->config['upload_path'] . '/' . $key;
+			$local_thumbnail = $this->phpbb_root_path . $key;
 
 			if ($this->config['img_create_thumbnail'])
 			{
@@ -160,6 +166,72 @@ class main_listener implements EventSubscriberInterface
 
 			$block_array['U_INLINE_LINK'] = $oss_link_fullsize;
 			$event['block_array'] = $block_array;
+		}
+	}
+
+	/**
+	 * Event to modify uploaded file before submit to the post
+	 *
+	 * @param $event
+	 */
+	public function avatar_driver_upload_move_file_before($event)
+	{
+		if ($this->config['oss_is_enabled'])
+		{
+			$filedata = $event['filedata'];
+
+			// Fullsize
+			$key = $this->config['avatar_path'] . '/' . $filedata['physical_filename'];
+			$this->uploadFileToOSS($key, $filedata['filename'], $filedata['mimetype']);
+		}
+	}
+
+	/**
+	 * Perform additional actions after image(s) deletion from the filesystem
+	 *
+	 * @param $event
+	 */
+	public function avatar_driver_upload_delete_before($event)
+	{
+		if ($this->config['oss_is_enabled'])
+		{
+			$ext = substr(strrchr($event['row']['avatar'], '.'), 1);
+			$key = $event['destination'] . '/' . $event['prefix'] . $event['row']['id'] . '.' . $ext;
+			$this->oss_client->deleteObject($this->config['oss_bucket'], $key);
+		}
+	}
+
+	/**
+	 * get vatar html
+	 * 
+	 * @param $event
+	 */
+	public function get_avatar_after($event)
+	{
+		global $user;
+		if ($this->config['oss_is_enabled'])
+		{
+			//
+			$avatar_data = $event['avatar_data'];
+			$alt = $event['alt'];
+
+			//
+			$ext		= substr(strrchr($event['row']['avatar'], '.'), 1);
+			$avatar	= (int) $event['row']['avatar'];
+			$prefix = $this->config['avatar_salt'] . '_'; 
+			$key = $this->config['avatar_path'] . '/' . $prefix . $avatar . '.' . $ext;
+
+			if (empty($this->config['oss_host'])) {
+				$avatar_data['src'] = '//' . $this->config['oss_bucket'] . '.' . $this->config['oss_endpoint'] . '/' . $key;
+			} else {
+				$avatar_data['src'] = '//' . $this->config['oss_host'] . '/' . $key;
+			}
+
+			$event['html'] = '<img class="avatar" src="' . $avatar_data['src'] . '" ' .
+				($avatar_data['width'] ? ('width="' . $avatar_data['width'] . '" ') : '') .
+				($avatar_data['height'] ? ('height="' . $avatar_data['height'] . '" ') : '') .
+				'alt="' . ((!empty($this->user->lang[$alt])) ? $this->user->lang[$alt] : $alt) . '" />';
+		 	$event['avatar_data'] = $avatar_data;
 		}
 	}
 
