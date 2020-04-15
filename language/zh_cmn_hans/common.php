@@ -40,8 +40,8 @@ $lang = array_merge($lang, [
 	'ACP_OSS_BUCKET_INVALID' => '您必须输入一个有效的OSS Bucket。',
 
 	'ACP_OSS_HOST'         => 'OSS关联域名（选填）',
-	'ACP_OSS_HOST_EXPLAIN' => '设置OSS关联的域名，如oss.xxxhost.com，文件路径会使用该域名显示。',
-	'ACP_OSS_HOST_INVALID' => '您必须输入一个有效的域名，不能包含协议名，如http等。',
+	'ACP_OSS_HOST_EXPLAIN' => '设置OSS关联的域名，如http://oss.xxxhost.com，文件路径会使用该域名显示。',
+	'ACP_OSS_HOST_INVALID' => '您必须输入一个有效的域名，与网页同协议可以//开头。',
 
 	'ACP_OSS_IS_ENABLED'         => '是否有效?',
 	'ACP_OSS_IS_ENABLED_EXPLAIN' => '显示Enabled，表示文件会上传到OSS。',

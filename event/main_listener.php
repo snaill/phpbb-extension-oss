@@ -141,8 +141,8 @@ class main_listener implements EventSubscriberInterface
 				$oss_link_thumb = '//' . $this->config['oss_bucket'] . '.' . $this->config['oss_endpoint'] . '/' . $key;
 				$oss_link_fullsize = '//' . $this->config['oss_bucket'] . '.' . $this->config['oss_endpoint'] . '/' . $attachment_key;
 			} else {
-				$oss_link_thumb = '//' . $this->config['oss_host'] . '/' . $key;
-				$oss_link_fullsize = '//' . $this->config['oss_host'] . '/' . $attachment_key;
+				$oss_link_thumb = $this->config['oss_host'] . '/' . $key;
+				$oss_link_fullsize = $this->config['oss_host'] . '/' . $attachment_key;
 			}
 			$local_thumbnail = $this->phpbb_root_path . $key;
 
@@ -224,7 +224,7 @@ class main_listener implements EventSubscriberInterface
 			if (empty($this->config['oss_host'])) {
 				$avatar_data['src'] = '//' . $this->config['oss_bucket'] . '.' . $this->config['oss_endpoint'] . '/' . $key;
 			} else {
-				$avatar_data['src'] = '//' . $this->config['oss_host'] . '/' . $key;
+				$avatar_data['src'] = $this->config['oss_host'] . '/' . $key;
 			}
 
 			$event['html'] = '<img class="avatar" src="' . $avatar_data['src'] . '" ' .
